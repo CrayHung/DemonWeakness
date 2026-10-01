@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魔王的弱點 - 海賊互動小遊戲</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1e112a, #2a085c);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #ffcc00;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px #000;
+        }
+        .quote {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #ffeb3b;
+            border-left: 4px solid #ff9800;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #ffcc00;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: #442a66;
+            color: #ccc;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .tab-btn.active {
+            background: #ff9800;
+            color: #000;
+        }
+        .mode-content {
+            display: none;
+            text-align: center;
+        }
+        .mode-content.active {
+            display: block;
+        }
+        .card-box {
+            background: #fff;
+            color: #333;
+            border-radius: 15px;
+            padding: 30px 20px;
+            margin: 20px 0;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+        .emoji-display {
+            font-size: 5rem;
+            margin-bottom: 10px;
+        }
+        .text-display {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .sub-text {
+            font-size: 1rem;
+            color: #e91e63;
+            font-weight: bold;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            background: #ff9800;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #b36b00;
+            transition: 0.1s;
+            margin-top: 10px;
+        }
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #b36b00;
+        }
+        .btn-danger {
+            background: #e91e63;
+            box-shadow: 0 5px 0 #880e4f;
+        }
+        .btn-danger:active {
+            box-shadow: 0 1px 0 #880e4f;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>😈 魔王的弱點 🏴‍☠️</h1>
+        <div class="quote">
+            💬 魔王語錄：「哇哈哈我是世界上最英俊、最威猛的魔王，沒人能嚇倒我！」
+        </div>
+    </header>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchMode('mode1')">1. 隨機表情</button>
+            <button class="tab-btn" onclick="switchMode('mode2')">2. 故事情境</button>
+            <button class="tab-btn" onclick="switchMode('mode3')">3. 鬼臉 PK</button>
+        </div>
+        <div id="mode1" class="mode-content active">
+            <p>魔王做表情給小朋友猜，或小朋友做給魔王猜！</p>
+            <div class="card-box">
+                <div id="emoji1" class="emoji-display">❓</div>
+                <div id="text1" class="text-display">點擊下方按鈕抽卡</div>
+            </div>
+            <button class="btn" onclick="drawExpression()">🎲 抽取下一個表情</button>
+        </div>
+        <div id="mode2" class="mode-content">
+            <p>魔王講故事，小朋友做對應的表情！</p>
+            <div class="card-box">
+                <div id="emoji2" class="emoji-display">📖</div>
+                <div id="text2" class="text-display">點擊按鈕抽取故事題目</div>
+            </div>
+            <button class="btn" onclick="drawStory()">📜 抽取情境故事</button>
+        </div>
+        <div id="mode3" class="mode-content">
+            <p>魔王最怕鬼臉！抽取鬼臉指令，魔王與小朋友一起比醜！</p>
+            <div class="card-box">
+                <div id="emoji3" class="emoji-display">🤪</div>
+                <div id="text3" class="text-display">準備好比醜了嗎？</div>
+                <div id="sub3" class="sub-text">點擊下方按鈕抽取鬼臉動作</div>
+            </div>
+            <button class="btn btn-danger" onclick="drawFunnyFace()">🤪 抽取鬼臉卡（比醜指令）</button>
+        </div>
+    </div>
+    <script>
+        const expressions = [
+            { emoji: '🤪', text: '吐舌頭扮鬼臉' },
+            { emoji: '😡', text: '超級生氣的面孔' },
+            { emoji: '😱', text: '嚇一大跳誇張表情' },
+            { emoji: '😭', text: '大哭嚎啕大哭' },
+            { emoji: '😆', text: '捧腹大笑' },
+            { emoji: '🤨', text: '挑眉懷疑的表情' },
+            { emoji: '🤓', text: '裝酷裝聰明' },
+            { emoji: '🤢', text: '噁心想吐的表情' },
+            { emoji: '🙄', text: '翻大白眼' },
+            { emoji: '🤩', text: '眼睛發光超級期待' },
+            { emoji: '🤐', text: '拉上嘴巴拉鍊不敢說話' },
+            { emoji: '😴', text: '打哈欠快要睡著' },
+            { emoji: '🥳', text: '吹派對哨子開心的表情' },
+            { emoji: '🥺', text: '水汪汪大眼睛求求你' },
+            { emoji: '😈', text: '壞蛋邪惡奸笑' },
+            { emoji: '🤯', text: '頭腦爆炸太震驚了' }
+        ];
+        const stories = [
+            { emoji: '🍦', text: '不好了！剛買的美味冰淇淋掉在地上了！' },
+            { emoji: '🎁', text: '哇！打開寶箱發現裡面全是滿滿的金幣！' },
+            { emoji: '👻', text: '半夜走在路上突然蹦出一隻小幽靈！' },
+            { emoji: '🍋', text: '一口咬下超級酸的野生黃檸檬！' },
+            { emoji: '💩', text: '走路不小心踩到小狗的便便！' },
+            { emoji: '🚀', text: '準備坐上火箭飛向太空囉！' },
+            { emoji: '🌶️', text: '一口喝下超級無敵麻辣湯！' },
+            { emoji: '🦕', text: '草叢裡突然鑽出一隻巨無霸恐龍！' },
+            { emoji: '🧸', text: '最喜歡的玩具被隔壁的小熊搶走了！' },
+            { emoji: '💯', text: '考試考了一百分獲得超級大禮物！' },
+            { emoji: '💉', text: '護理師阿姨拿著大針筒準備打針！' },
+            { emoji: '🦟', text: '耳朵旁邊一直有蚊子嗡嗡叫打不到！' }
+        ];
+        const funnyFaces = [
+            { emoji: '🤪', text: '【大舌頭鬼臉】', sub: '動作：眼睛張到最大 ＋ 舌頭儘量伸長拉出來！' },
+            { emoji: '🥴', text: '【鬥雞眼鬼臉】', sub: '動作：雙眼向中間看（鬥雞眼）＋ 嘴巴變成「O」型！' },
+            { emoji: '👹', text: '【大猩猩怪獸】', sub: '動作：下巴極度凸出 ＋ 手指捏著下眼皮向上拉！' },
+            { emoji: '🐷', text: '【神豬招財 nose】', sub: '動作：用手指把鼻子往上推成豬鼻子 ＋ 鼓起雙頰！' },
+            { emoji: '🤡', text: '【搞笑小丑臉】', sub: '動作：雙手把嘴巴往兩邊拉大 ＋ 吐出小舌頭！' },
+            { emoji: '🧐', text: '【單眼怪鬼臉】', sub: '動作：用力揉捏單邊臉頰 ＋ 眨一隻眼閉一隻眼！' },
+            { emoji: '🦍', text: '【咆哮金剛】', sub: '動作：嘴巴開到最大拍打胸膛 ＋ 露出上排牙齒！' },
+            { emoji: '👽', text: '【外星魔王】', sub: '動作：雙手捏住耳朵往外拉 ＋ 嘴巴吐氣發出「嗶嗶」聲！' }
+        ];
+        function switchMode(modeId) {
+            document.querySelectorAll('.mode-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(modeId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+        function drawExpression() {
+            const random = expressions[Math.floor(Math.random() * expressions.length)];
+            document.getElementById('emoji1').innerText = random.emoji;
+            document.getElementById('text1').innerText = random.text;
+        }
+        function drawStory() {
+            const random = stories[Math.floor(Math.random() * stories.length)];
+            document.getElementById('emoji2').innerText = random.emoji;
+            document.getElementById('text2').innerText = random.text;
+        }
+        function drawFunnyFace() {
+            const random = funnyFaces[Math.floor(Math.random() * funnyFaces.length)];
+            document.getElementById('emoji3').innerText = random.emoji;
+            document.getElementById('text3').innerText = random.text;
+            document.getElementById('sub3').innerText = random.sub;
+        }
+    </script>
+</body>
+</html>
